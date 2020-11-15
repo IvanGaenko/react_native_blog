@@ -2,6 +2,11 @@
   "expo": {
     "name": "react_native_blog",
     "slug": "react_native_blog",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
