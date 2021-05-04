@@ -1,5 +1,5 @@
 // Imports
-import React, { useLayoutEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { RefreshControl, FlatList, View } from 'react-native';
@@ -9,14 +9,10 @@ import Body from '../../common/Body';
 import PostItem from '../PostItem';
 import EmptyMessage from '../../common/EmptyMessage';
 import Input from '../../common/Input';
-import { getCurrentAuthor } from '../../../api/actions/authorActions';
-import {
-  getCurrentPost,
-  getExistedPost,
-} from '../../../api/actions/postsActions';
 import words from '../../../config/words';
 import names from '../../../routes/names';
-import { selectPostsLength, filteredPosts } from '../../../selectors';
+import { setPostList } from '../../../api/actions/postsActions';
+import { filteredPosts } from '../../../selectors';
 import { postsUpdateSearch } from '../../../api/actions/searchActions';
 
 // UI Imports
@@ -24,23 +20,19 @@ import styles from './styles';
 
 // Component
 export default function Posts({ route, navigation }) {
-  const { authorId, name } = route.params;
-  const { postsIsLoading } = useSelector((state) => state.posts);
-  const postsLength = useSelector(selectPostsLength);
-  const post = useSelector(filteredPosts);
+  const { name, messages } = route.params;
+  const { isLoading } = useSelector((state) => state.authors);
+  const posts = useSelector(filteredPosts);
+
   const dispatch = useDispatch();
 
+  // refresh
   const refresh = useCallback(() => {
-    if (postsLength) {
-      dispatch(getCurrentAuthor(authorId));
-      dispatch(getCurrentPost(authorId));
-    } else {
-      dispatch(getExistedPost(authorId));
-    }
-  }, [dispatch, postsLength, authorId]);
+    dispatch(setPostList(messages));
+  }, [dispatch, messages]);
 
   // on component load
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (name === undefined) {
       navigation.navigate(names.ROOT_SCREEN);
     }
@@ -58,18 +50,18 @@ export default function Posts({ route, navigation }) {
   return (
     <Body>
       <View style={styles.container}>
+        {/* Input */}
         <Input onChangeInputText={onChangeInputText} />
+        {/* List of Posts */}
         <FlatList
-          data={post}
+          data={posts}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => <PostItem item={item} />}
-          refreshControl={
-            <RefreshControl refreshing={postsIsLoading} onRefresh={refresh} />
-          }
+          refreshControl={<RefreshControl refreshing={isLoading} />}
           ListEmptyComponent={() => (
             <EmptyMessage message={words.listIsEmpty} />
           )}
-          refreshing={postsIsLoading}
+          refreshing={isLoading}
         />
       </View>
     </Body>
@@ -86,6 +78,7 @@ Posts.propTypes = {
     params: PropTypes.shape({
       authorId: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
+      messages: PropTypes.arrayOf(PropTypes.object).isRequired,
     }).isRequired,
   }).isRequired,
 };

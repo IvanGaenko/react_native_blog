@@ -5,24 +5,9 @@ export const LIST_REQUEST = 'AUTHORS/LIST/REQUEST';
 export const LIST_RESPONSE = 'AUTHORS/LIST/RESPONSE';
 export const LIST_DONE = 'AUTHORS/LIST/DONE';
 
-// Author
-export const AUTHOR_REQUEST = 'AUTHOR/REQUEST';
-export const AUTHOR_RESPONSE = 'AUTHOR/RESPONSE';
-export const AUTHOR_DONE = 'AUTHOR/DONE';
-
-// Posts
-export const POSTS_REQUEST = 'POSTS/LIST/REQUEST';
-export const POSTS_RESPONSE = 'POSTS/LIST/RESPONSE';
-export const POSTS_DONE = 'POSTS/LIST/DONE';
-
-// Post
-export const POST_REQUEST = 'POST/REQUEST';
-export const POST_RESPONSE = 'POST/RESPONSE';
-export const POST_DONE = 'POSTS/DONE';
-
 // Search
 
 export const AUTHORS_UPDATE_SEARCH = 'AUTHORS/UPDATE/SEARCH';
 export const POSTS_UPDATE_SEARCH = 'POSTS/UPDATE/SEARCH';
 
-export const GET_EXISTED_POSTS = 'GET_EXISTED_POSTS';
+export const SET_POST_LIST = 'SET_POST_LIST';

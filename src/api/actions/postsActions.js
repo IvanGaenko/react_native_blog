@@ -3,92 +3,50 @@ import axios from 'axios';
 
 // App Imports
 import { API_URL } from '../../config/env';
-import {
-  POSTS_REQUEST,
-  POSTS_RESPONSE,
-  POSTS_DONE,
-  POST_REQUEST,
-  POST_RESPONSE,
-  POST_DONE,
-  GET_EXISTED_POSTS,
-} from './types';
+import { SET_POST_LIST } from './types';
 
-export function getPostsList(isLoading = true) {
-  return async (dispatch) => {
-    dispatch({
-      type: POSTS_REQUEST,
-      isLoading,
-    });
-
-    try {
-      const { data } = await axios.get(`${API_URL}/posts`);
-      const newData = data.map((post) => {
-        return {
-          ...post,
-          body: post.body.replace(/\n/g, ' '),
-        };
+function mergePosts(posts) {
+  const arrData = [];
+  posts.forEach((post) => {
+    const existed = arrData.find((p) => p.userId === post.userId);
+    if (existed) {
+      existed.messages.push({
+        id: post.id,
+        title: post.title,
+        body: post.body,
       });
-      dispatch({
-        type: POSTS_RESPONSE,
-        posts: newData,
-      });
-    } catch (error) {
-      dispatch({
-        type: POSTS_RESPONSE,
-        posts: [],
-      });
-    } finally {
-      dispatch({
-        type: POSTS_DONE,
-        isLoading: false,
+    } else {
+      arrData.push({
+        userId: post.userId,
+        messages: [
+          {
+            id: post.id,
+            title: post.title,
+            body: post.body,
+          },
+        ],
       });
     }
-  };
+  });
+  return arrData;
 }
 
-export function getCurrentPost(_id, isLoading = true) {
-  return async (dispatch) => {
-    dispatch({
-      type: POST_REQUEST,
-      isLoading,
-    });
-
-    try {
-      const { data } = await axios.get(`${API_URL}/posts`, {
-        params: {
-          userId: _id,
-        },
-      });
-
-      const newData = data.map((post) => {
-        return {
-          ...post,
-          body: post.body.replace(/\n/g, ' '),
-        };
-      });
-      dispatch({
-        type: POST_RESPONSE,
-        post: newData,
-      });
-    } catch (error) {
-      dispatch({
-        type: POST_RESPONSE,
-        post: [],
-      });
-    } finally {
-      dispatch({
-        type: POST_DONE,
-        isLoading: false,
-      });
-    }
-  };
+export async function getPosts() {
+  const { data } = await axios.get(`${API_URL}/posts`);
+  const newData = data.map((post) => {
+    return {
+      ...post,
+      body: post.body.replace(/\n/g, ' '),
+    };
+  });
+  return mergePosts(newData);
 }
 
-export function getExistedPost(id) {
+export function setPostList(messages) {
   return (dispatch) => {
     dispatch({
-      type: GET_EXISTED_POSTS,
-      id,
+      type: SET_POST_LIST,
+      messages,
     });
   };
 }

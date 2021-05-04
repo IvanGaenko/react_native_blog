@@ -8,5 +8,6 @@ module.exports = (api) => {
       'module:metro-react-native-babel-preset',
       'airbnb',
     ],
+    plugins: ['@babel/plugin-proposal-class-properties'],
   };
 };

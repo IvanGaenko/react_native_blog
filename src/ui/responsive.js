@@ -25,3 +25,9 @@ export const font = (size) =>
 // Scale
 export const scalable = (size) =>
   size * (deviceWidth >= breakpointTablet ? scaleFactor : 1);
+
+export const deviceWidthHalf = deviceWidth / 2;
+export const deviceWidthThird = deviceWidth / 3;
+
+export const postHeight = scalable(45) + scalable(16) * 2;
+export const placeholderLenght = Math.round(deviceHeight / postHeight);

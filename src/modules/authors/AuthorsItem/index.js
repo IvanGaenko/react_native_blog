@@ -13,9 +13,9 @@ import styles from './styles';
 import { getFirstLetters, postsCount } from '../../../helpers/utils';
 
 // Component
-const AuthorsItem = ({ onSelect, item: { id, name, email }, postsAmount }) => {
+const AuthorsItem = ({ onSelect, item: { id, name, email, messages } }) => {
   return (
-    <TouchableOpacity onPress={onSelect({ id, name })}>
+    <TouchableOpacity onPress={onSelect({ id, name, email, messages })}>
       <ListItem containerStyle={styles.container}>
         <Avatar
           rounded
@@ -30,7 +30,7 @@ const AuthorsItem = ({ onSelect, item: { id, name, email }, postsAmount }) => {
             {email}
           </ListItem.Subtitle>
         </ListItem.Content>
-        <Text style={styles.textAmount}>{postsCount(postsAmount)}</Text>
+        <Text style={styles.textAmount}>{postsCount(messages.length)}</Text>
 
         <ListItem.Chevron color={black} size={font(25)} />
       </ListItem>
@@ -44,9 +44,9 @@ AuthorsItem.propTypes = {
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
+    messages: PropTypes.arrayOf(PropTypes.object).isRequired,
   }).isRequired,
   onSelect: PropTypes.func.isRequired,
-  postsAmount: PropTypes.number.isRequired,
 };
 
 export default AuthorsItem;

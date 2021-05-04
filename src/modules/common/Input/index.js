@@ -1,5 +1,5 @@
 // Imports
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { SearchBar } from 'react-native-elements';
 
@@ -10,28 +10,37 @@ import styles from './styles';
 import words from '../../../config/words';
 
 // Component
-const Input = ({ onChangeInputText }) => {
-  // state
-  const [word, setWord] = useState('');
+class Input extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      word: '',
+    };
+    this.onChange = this.onChange.bind(this);
+  }
 
   // onChange
-  const onChange = (e) => {
-    setWord(e);
+  onChange = (e) => {
+    const { onChangeInputText } = this.props;
+    this.setState({ word: e });
     onChangeInputText(e);
   };
 
-  return (
-    <SearchBar
-      platform={words.search.platform}
-      searchIcon={styles.searchIcon}
-      placeholder={words.search.title}
-      onChangeText={onChange}
-      value={word}
-      inputContainerStyle={styles.inputContainerStyle}
-      containerStyle={styles.containerStyle}
-    />
-  );
-};
+  render() {
+    const { word } = this.state;
+    return (
+      <SearchBar
+        platform={words.search.platform}
+        searchIcon={styles.searchIcon}
+        placeholder={words.search.title}
+        onChangeText={this.onChange}
+        value={word}
+        inputContainerStyle={styles.inputContainerStyle}
+        containerStyle={styles.containerStyle}
+      />
+    );
+  }
+}
 
 // Component Properties
 Input.propTypes = {

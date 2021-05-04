@@ -1,32 +1,12 @@
 import { createSelector } from 'reselect';
 
 // states
-const authorsSelector = (state) => state.authors;
 const authorsListSelector = (state) => state.authors.list;
-
-const postListSelector = (state) => state.posts.post;
 const postsListSelector = (state) => state.posts.posts;
-const postsSelector = (state) => state.posts;
-
 const searchAuthorsSelector = (state) => state.search.authors;
 const searchPostsSelector = (state) => state.search.posts;
 
-// selectors
-export const selectAuthors = createSelector(
-  authorsSelector,
-  (allAuthors) => allAuthors,
-);
-
-export const selectPosts = createSelector(
-  postsSelector,
-  (allPosts) => allPosts,
-);
-
-export const selectPostsLength = createSelector(
-  postsListSelector,
-  (posts) => posts.length === 0,
-);
-
+// Authors Search
 export const filteredAuthors = createSelector(
   [authorsListSelector, searchAuthorsSelector],
   (authors, search) => {
@@ -47,8 +27,9 @@ export const filteredAuthors = createSelector(
   },
 );
 
+// Posts Search
 export const filteredPosts = createSelector(
-  [postListSelector, searchPostsSelector],
+  [postsListSelector, searchPostsSelector],
   (posts, search) => {
     return posts.filter((post) => {
       if (search.length < 1) {

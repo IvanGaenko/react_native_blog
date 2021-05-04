@@ -2,17 +2,11 @@
 import axios from 'axios';
 
 // App Imports
-import { API_URL } from '../../config/env';
-import {
-  LIST_DONE,
-  LIST_REQUEST,
-  LIST_RESPONSE,
-  AUTHOR_REQUEST,
-  AUTHOR_RESPONSE,
-  AUTHOR_DONE,
-} from './types';
+import { API_URL, page, limit } from '../../config/env';
+import { LIST_DONE, LIST_REQUEST, LIST_RESPONSE } from './types';
+import { getPosts } from './postsActions';
 
-export function getAuthorsList(isLoading = true) {
+export default function getAuthorsList(isLoading = true) {
   return async (dispatch) => {
     dispatch({
       type: LIST_REQUEST,
@@ -20,10 +14,21 @@ export function getAuthorsList(isLoading = true) {
     });
 
     try {
-      const { data } = await axios.get(`${API_URL}/users`);
+      const { data } = await axios.get(
+        `${API_URL}/users?_limit=${limit}&_page=${page}`,
+      );
+      const postsData = await getPosts();
+      const newAuthors = data.map((author) => {
+        return {
+          id: author.id,
+          name: author.name,
+          email: author.email,
+          messages: postsData.find((p) => p.userId === author.id).messages,
+        };
+      });
       dispatch({
         type: LIST_RESPONSE,
-        list: data,
+        list: newAuthors,
       });
     } catch (error) {
       dispatch({
@@ -33,37 +38,6 @@ export function getAuthorsList(isLoading = true) {
     } finally {
       dispatch({
         type: LIST_DONE,
-        isLoading: false,
-      });
-    }
-  };
-}
-
-export function getCurrentAuthor(_id, isLoading = true) {
-  return async (dispatch) => {
-    dispatch({
-      type: AUTHOR_REQUEST,
-      isLoading,
-    });
-
-    try {
-      const { data } = await axios.get(`${API_URL}/users`, {
-        params: {
-          id: _id,
-        },
-      });
-      dispatch({
-        type: AUTHOR_RESPONSE,
-        author: data[0],
-      });
-    } catch (error) {
-      dispatch({
-        type: AUTHOR_RESPONSE,
-        author: [],
-      });
-    } finally {
-      dispatch({
-        type: AUTHOR_DONE,
         isLoading: false,
       });
     }

@@ -1,5 +1,5 @@
 // UI Imports
-import { font } from '../../../ui/responsive';
+import { font, scalable, postHeight } from '../../../ui/responsive';
 import {
   black,
   subtitleGrey,
@@ -10,6 +10,8 @@ import {
 export default {
   container: {
     backgroundColor: invisible,
+    padding: scalable(16),
+    height: postHeight,
   },
   avatarOverlay: { backgroundColor: avatarBackground },
   avatarTitle: {
